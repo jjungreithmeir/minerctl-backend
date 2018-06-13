@@ -27,10 +27,16 @@ PARSER.add_argument('integral', type=int, help='PID I value')
 PARSER.add_argument('deriative', type=int, help='PID D value')
 PARSER.add_argument('bias', type=int, help='PID bias value')
 
+PARSER.add_argument('number_of_miners', type=int, help='number of miners')
 
-class Firmware(Resource):
+class Info(Resource):
     def get(self):
-        return {'version': MOCK.fw_version}
+        return {'firmware_version': MOCK.info_fw_version,
+                'number_of_miners': MOCK.number_of_miners} # TODO add database connection
+    def put(self):
+        args = PARSER.parse_args()
+        MOCK.number_of_miners = args['number_of_miners']
+        return '', 200
 
 class Temperature(Resource):
     def get(self):
@@ -113,7 +119,7 @@ class OperationModifier(Resource):
             MOCK.miners[id] = not MOCK.miners[id]
         return '', 200
 
-API.add_resource(Firmware, '/fw')
+API.add_resource(Info, '/info')
 API.add_resource(Temperature, '/temp')
 API.add_resource(Filtration, '/filter')
 API.add_resource(Ventilation, '/fans/<string:mode>')
@@ -121,4 +127,4 @@ API.add_resource(Operation, '/op/<string:mode>')
 API.add_resource(OperationModifier, '/op/<string:mode>/<int:miner_id>/<string:action>')
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=12345)
+    APP.run(port=12345)

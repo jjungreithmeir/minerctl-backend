@@ -2,7 +2,7 @@ import random
 
 class Controller:
     def __init__(self):
-        self.fw_version = '0.0.1'
+        self.info_fw_version = '0.0.1'
 
         self.temp_measurements = [45, 42, 35]
         self.temp_target = 45

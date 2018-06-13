@@ -19,4 +19,4 @@ freeze:
 	pip freeze > requirements.txt
 
 run:
-	export FLASK_APP=controller.py; export FLASK_ENV=development; python -m flask run
+	export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py 
