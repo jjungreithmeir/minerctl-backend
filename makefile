@@ -1,10 +1,7 @@
 all: clean run
 
-source:
-	source env/bin/active
-
 install:
-	pip install -r requirements.txt 
+	source env/bin/activate; pip install -r requirements.txt \
 
 clean:
 	rm -rf __pycache__/ src/__pycache__/
@@ -16,7 +13,7 @@ lint:
 	~/.local/bin/pylint controller.py
 
 freeze:
-	pip freeze > requirements.txt
+	source env/bin/activate; pip freeze > requirements.txt
 
 run:
-	export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py 
+	source env/bin/activate; export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py 

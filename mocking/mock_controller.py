@@ -20,7 +20,7 @@ class Controller:
         self.fans_rel_max_rpm = 80
         self.fans_rel_rpm = 50
 
-        self.mode = 0
+        self.active_mode = 0
 
         self.number_of_miners = 120
         self.miners = []

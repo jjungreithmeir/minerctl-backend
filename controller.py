@@ -18,6 +18,7 @@ PARSER.add_argument('threshold', type=int, help='pressure difference threshold a
 PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
 PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
 
+PARSER.add_argument('active_mode', type=int, help='operational mode. 0 = gpu, 1 = fpga, 2 = testing')
 PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
 PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
 PARSER.add_argument('restime', type=int, help='fpga mode - restime')
@@ -62,12 +63,12 @@ class Filtration(Resource):
         return '', 200
 
 class Ventilation(Resource):
-    def get(self, mode):
-        if mode == 'abs':
+    def get(self, scale):
+        if scale == 'abs':
             return {'min_rpm': MOCK.fans_abs_min_rpm,
                     'max_rpm': MOCK.fans_abs_max_rpm,
                     'rpm': MOCK.fans_abs_rpm}
-        elif mode == 'rel':
+        elif scale == 'rel':
             return {'min_rpm': MOCK.fans_rel_min_rpm,
                     'max_rpm': MOCK.fans_rel_max_rpm,
                     'rpm': MOCK.fans_rel_rpm}
@@ -84,31 +85,29 @@ class Ventilation(Resource):
             abort(400, message="Invalid request parameter")
 
 class Operation(Resource):
-    def get(self, mode):
-        resp = {}
-        if mode == 'gpu' or mode == 'testing':
+    def get(self):
+        resp = {'active_mode': MOCK.active_mode}
+        if MOCK.active_mode == 0 or MOCK.active_mode == 2: # GPU mode
             resp['ontime'] = MOCK.op_gpu_ontime
             resp['offtime'] = MOCK.op_gpu_ontime
-        if mode == 'fpga' or mode == 'testing':
+        if MOCK.active_mode == 1 or MOCK.active_mode == 2: # FPGA mode
             resp['restime'] = MOCK.op_fpga_restime
-        if mode != 'fpga'and mode != 'gpu' and mode != 'testing':
+        if MOCK.active_mode < 0 and MOCK.active_mode > 2:
             abort(400, message="Invalid request parameter")
         return resp
 
-    def put(self, mode):
+    def put(self):
         args = PARSER.parse_args()
-        if mode == 'gpu' or mode == 'testing':
+        MOCK.active_mode = args['active_mode']
+        if MOCK.active_mode == 0 or MOCK.active_mode == 2: # GPU mode
             MOCK.op_gpu_ontime = args['ontime']
             MOCK.op_gpu_ontime = args['offtime']
-        if mode == 'fpga' or mode == 'testing':
+        if MOCK.active_mode == 1 or MOCK.active_mode == 2: # FPGA mode
             MOCK.op_fpga_restime == args['restime']
-        if mode != 'fpga' and mode != 'gpu' and mode != 'testing':
-            abort(400, message="Invalid request parameter")
-
         return '', 200
 
-class OperationModifier(Resource):
-    def put(self, mode, id, action):
+class MinerController(Resource):
+    def put(self, id, action):
         if action == 'on': # TODO change action based on mode
             MOCK.miners[id] = True
             return '', 200
@@ -117,14 +116,33 @@ class OperationModifier(Resource):
             return '', 200
         elif action == 'toggle':
             MOCK.miners[id] = not MOCK.miners[id]
+
+        if MOCK.active_mode < 0 and MOCK.active_mode > 2:
+            abort(400, message="Invalid request parameter")
+
+        return '', 200
+
+class PID(Resource):
+    def get(self):
+        return {'proportional': MOCK.pid_proportional,
+                'integral': MOCK.pid_integral,
+                'deriative': MOCK.pid_deriative,
+                'bias': MOCK.pid_bias}
+    def put(self):
+        args = PARSER.parse_args()
+        MOCK.pid_proportional = args['proportional']
+        MOCK.pid_integral = args['integral']
+        MOCK.pid_deriative = args['deriative']
+        MOCK.pid_bias = args['bias']
         return '', 200
 
 API.add_resource(Info, '/info')
 API.add_resource(Temperature, '/temp')
 API.add_resource(Filtration, '/filter')
-API.add_resource(Ventilation, '/fans/<string:mode>')
-API.add_resource(Operation, '/op/<string:mode>')
-API.add_resource(OperationModifier, '/op/<string:mode>/<int:miner_id>/<string:action>')
+API.add_resource(Ventilation, '/fans/<string:scale>')
+API.add_resource(Operation, '/mode')
+API.add_resource(MinerController, '/miner/<int:miner_id>/<string:action>')
+API.add_resource(PID, '/pid')
 
 if __name__ == '__main__':
     APP.run(port=12345)
