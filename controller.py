@@ -107,20 +107,23 @@ class Operation(Resource):
         return '', 200
 
 class MinerController(Resource):
-    def put(self, id, action):
+    def put(self, miner_id, action):
         if action == 'on': # TODO change action based on mode
-            MOCK.miners[id] = True
+            MOCK.miners[miner_id] = True
             return '', 200
         elif action == 'off':
-            MOCK.miners[id] = False
+            MOCK.miners[miner_id] = False
             return '', 200
         elif action == 'toggle':
-            MOCK.miners[id] = not MOCK.miners[id]
+            MOCK.miners[miner_id] = not MOCK.miners[id]
 
         if MOCK.active_mode < 0 and MOCK.active_mode > 2:
             abort(400, message="Invalid request parameter")
 
         return '', 200
+
+    def get(self, miner_id):
+        return {'running': MOCK.miners[miner_id]}
 
 class PID(Resource):
     def get(self):
@@ -136,13 +139,48 @@ class PID(Resource):
         MOCK.pid_bias = args['bias']
         return '', 200
 
+class Config(Resource):
+    """
+    This class seems a bit hacky but it is actually really useful for
+    centralized views such as a /settings page which shows all configurable
+    options and/or allows setting values with a single request.
+    """
+    def get(self):
+        return {'fw_version': MOCK.info_fw_version,
+                'measurements': MOCK.temp_measurements,
+                'target': MOCK.temp_target,
+                'sensor_id': MOCK.temp_sensor_id,
+                'external': MOCK.temp_external,
+                'pressure_diff': MOCK.filter_pressure_diff,
+                'status_ok': MOCK.filter_status_ok,
+                'threshold': MOCK.filter_threshold,
+                'abs_min_rpm': MOCK.fans_abs_min_rpm,
+                'abs_max_rpm': MOCK.fans_abs_max_rpm,
+                'abs_rpm': MOCK.fans_abs_rpm,
+                'rel_min_rpm': MOCK.fans_rel_min_rpm,
+                'rel_max_rpm': MOCK.fans_rel_max_rpm,
+                'rel_rpm': MOCK.fans_rel_rpm,
+                'active_mode': MOCK.active_mode,
+                'number_of_miners': MOCK.number_of_miners,
+                'pid_proportional': MOCK.pid_proportional,
+                'pid_integral': MOCK.pid_integral,
+                'pid_deriative': MOCK.pid_deriative,
+                'pid_bias': MOCK.pid_bias,
+                'ontime': MOCK.op_gpu_ontime,
+                'offtime': MOCK.op_gpu_offtime,
+                'restime': MOCK.op_fpga_restime,
+                'miners': MOCK.miners
+        }
+
 API.add_resource(Info, '/info')
 API.add_resource(Temperature, '/temp')
 API.add_resource(Filtration, '/filter')
 API.add_resource(Ventilation, '/fans/<string:scale>')
 API.add_resource(Operation, '/mode')
-API.add_resource(MinerController, '/miner/<int:miner_id>/<string:action>')
+API.add_resource(MinerController, '/miner/<int:miner_id>/<string:action>',
+                 '/miner/<int:miner_id>')
 API.add_resource(PID, '/pid')
+API.add_resource(Config, '/cfg')
 
 if __name__ == '__main__':
     APP.run(port=12345)
