@@ -15,8 +15,10 @@ PARSER.add_argument('external', type=int, help='external temperature (e.g. miner
 
 PARSER.add_argument('threshold', type=int, help='pressure difference threshold at which the filter is to be changed')
 
-PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
-PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
+PARSER.add_argument('rel_min_rpm', type=int, help='minimum fan rpm')
+PARSER.add_argument('rel_max_rpm', type=int, help='maximimum fan rpm')
+PARSER.add_argument('abs_min_rpm', type=int, help='minimum fan rpm')
+PARSER.add_argument('abs_max_rpm', type=int, help='maximimum fan rpm')
 
 PARSER.add_argument('active_mode', type=int, help='operational mode. 0 = gpu, 1 = fpga, 2 = testing')
 PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
@@ -171,6 +173,25 @@ class Config(Resource):
                 'restime': MOCK.op_fpga_restime,
                 'miners': MOCK.miners
         }
+
+    def put(self):
+        args = PARSER.parse_args()
+        MOCK.temp_target = args['target']
+        MOCK.temp_sensor_id = args['sensor_id']
+        MOCK.temp_external = args['external']
+        MOCK.filter_threshold = args['threshold']
+        MOCK.fans_abs_min_rpm = args['abs_min_rpm']
+        MOCK.fans_abs_max_rpm = args['abs_max_rpm']
+        MOCK.active_mode = args['active_mode']
+        MOCK.number_of_miners  = args['number_of_miners']
+        MOCK.pid_proportional = args['proportional']
+        MOCK.pid_integral = args['integral']
+        MOCK.pid_deriative = args['deriative']
+        MOCK.pid_bias = args['bias']
+        #MOCK.op_gpu_ontime = args['ontime']
+        #MOCK.op_gpu_offtime = args['offtime']
+        #MOCK.op_fpga_restime = args['restime']
+        return '', 200
 
 API.add_resource(Info, '/info')
 API.add_resource(Temperature, '/temp')
