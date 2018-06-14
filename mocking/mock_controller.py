@@ -4,21 +4,18 @@ class Controller:
     def __init__(self):
         self.info_fw_version = '0.0.1'
 
-        self.temp_measurements = {0: 45, 1: 42, 2: 35}
+        self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
         self.temp_target = 45
-        self.temp_sensor_id = 3
-        self.temp_external = 39
+        self.temp_sensor_id = 2
+        self.temp_external = random.randint(30, 45)
 
-        self.filter_pressure_diff = 1523
+        self.filter_pressure_diff = random.randint(1425, 1450)
         self.filter_status_ok = False
         self.filter_threshold = 1423
 
-        self.fans_abs_min_rpm = 2000
-        self.fans_abs_max_rpm = 7000
-        self.fans_abs_rpm = 5000
-        self.fans_rel_min_rpm = 5
-        self.fans_rel_max_rpm = 80
-        self.fans_rel_rpm = 50
+        self.fans_min_rpm = 5
+        self.fans_max_rpm = 80
+        self.fans_rpm = random.randint(50, 65)
 
         self.active_mode = 0
 
@@ -29,7 +26,7 @@ class Controller:
 
         self.pid_proportional = 1
         self.pid_integral = 20
-        self.pid_deriative = 5
+        self.pid_derivative = 5
         self.pid_bias = 12
 
         self.op_gpu_ontime = 100
