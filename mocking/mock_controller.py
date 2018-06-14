@@ -7,7 +7,7 @@ class Controller:
         self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
         self.temp_target = 45
         self.temp_sensor_id = 2
-        self.temp_external = random.randint(30, 45)
+        self.temp_external = 32
 
         self.filter_pressure_diff = random.randint(1425, 1450)
         self.filter_status_ok = False
@@ -23,6 +23,8 @@ class Controller:
         self.miners = []
         for miner in range(self.number_of_miners):
             self.miners.append(random.random() > 0.1)
+
+        # simulate missing rigs
         self.miners[99] = None
         self.miners[12] = None
         self.miners[30] = None
@@ -40,7 +42,5 @@ class Controller:
 
     def randomize_variables(self):
         self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
-        self.temp_external = random.randint(30, 45)
-        self.temp_external = random.randint(30, 45)
         self.filter_pressure_diff = random.randint(1425, 1450)
         self.fans_rpm = random.randint(50, 65)
