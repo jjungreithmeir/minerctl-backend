@@ -33,3 +33,10 @@ class Controller:
         self.op_gpu_offtime = 200
 
         self.op_fpga_restime = 1200
+
+    def randomize_variables(self):
+        self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
+        self.temp_external = random.randint(30, 45)
+        self.temp_external = random.randint(30, 45)
+        self.filter_pressure_diff = random.randint(1425, 1450)
+        self.fans_rpm = random.randint(50, 65)

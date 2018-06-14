@@ -41,6 +41,7 @@ class Info(Resource):
 
 class Temperature(Resource):
     def get(self):
+        MOCK.randomize_variables()
         return {'measurements': MOCK.temp_measurements,
                 'target': MOCK.temp_target,
                 'sensor_id': MOCK.temp_sensor_id,
@@ -54,6 +55,7 @@ class Temperature(Resource):
 
 class Filtration(Resource):
     def get(self):
+        MOCK.randomize_variables()
         return {'pressure_diff': MOCK.filter_pressure_diff,
                 'status_ok': MOCK.filter_status_ok,
                 'threshold': MOCK.filter_threshold}
@@ -64,6 +66,7 @@ class Filtration(Resource):
 
 class Ventilation(Resource):
     def get(self):
+        MOCK.randomize_variables()
         return {'min_rpm': MOCK.fans_min_rpm,
                 'max_rpm': MOCK.fans_max_rpm,
                 'rpm': MOCK.fans_rpm}
@@ -136,6 +139,7 @@ class Config(Resource):
     options and/or allows setting values with a single request.
     """
     def get(self):
+        MOCK.randomize_variables()
         return {'fw_version': MOCK.info_fw_version,
                 'measurements': MOCK.temp_measurements,
                 'target': MOCK.temp_target,
