@@ -23,6 +23,10 @@ class Controller:
         self.miners = []
         for miner in range(self.number_of_miners):
             self.miners.append(random.random() > 0.1)
+        self.miners[99] = None
+        self.miners[12] = None
+        self.miners[30] = None
+        self.miners[44] = None
 
         self.pid_proportional = 1
         self.pid_integral = 20
