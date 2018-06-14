@@ -18,7 +18,7 @@ PARSER.add_argument('threshold', type=int, help='pressure difference threshold a
 PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
 PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
 
-PARSER.add_argument('active_mode', type=int, help='operational mode. 0 = gpu, 1 = fpga, 2 = testing')
+PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'fpga'")
 PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
 PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
 PARSER.add_argument('restime', type=int, help='fpga mode - restime')
@@ -80,22 +80,20 @@ class Ventilation(Resource):
 class Operation(Resource):
     def get(self):
         resp = {'active_mode': MOCK.active_mode}
-        if MOCK.active_mode == 0 or MOCK.active_mode == 2: # GPU mode
+        if MOCK.active_mode == 'gpu':
             resp['ontime'] = MOCK.op_gpu_ontime
             resp['offtime'] = MOCK.op_gpu_ontime
-        if MOCK.active_mode == 1 or MOCK.active_mode == 2: # FPGA mode
+        if MOCK.active_mode == 'fpga':
             resp['restime'] = MOCK.op_fpga_restime
-        if MOCK.active_mode < 0 and MOCK.active_mode > 2:
-            abort(400, message="Invalid request parameter")
         return resp
 
     def put(self):
         args = PARSER.parse_args()
         MOCK.active_mode = args['active_mode']
-        if MOCK.active_mode == 0 or MOCK.active_mode == 2: # GPU mode
+        if MOCK.active_mode == 'gpu':
             MOCK.op_gpu_ontime = args['ontime']
             MOCK.op_gpu_ontime = args['offtime']
-        if MOCK.active_mode == 1 or MOCK.active_mode == 2: # FPGA mode
+        if MOCK.active_mode == 'fpga':
             MOCK.op_fpga_restime == args['restime']
         return '', 200
 
@@ -109,9 +107,6 @@ class MinerController(Resource):
             return '', 200
         elif action == 'toggle':
             MOCK.miners[miner_id] = not MOCK.miners[id]
-
-        if MOCK.active_mode < 0 and MOCK.active_mode > 2:
-            abort(400, message="Invalid request parameter")
 
         return '', 200
 

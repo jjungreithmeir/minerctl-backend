@@ -17,7 +17,7 @@ class Controller:
         self.fans_max_rpm = 80
         self.fans_rpm = random.randint(50, 65)
 
-        self.active_mode = 0
+        self.active_mode = 'gpu'
 
         self.number_of_miners = 120
         self.miners = []
