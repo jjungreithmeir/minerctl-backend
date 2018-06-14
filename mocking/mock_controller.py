@@ -4,14 +4,14 @@ class Controller:
     def __init__(self):
         self.info_fw_version = '0.0.1'
 
-        self.temp_measurements = [45, 42, 35]
+        self.temp_measurements = {0: 45, 1: 42, 2: 35}
         self.temp_target = 45
         self.temp_sensor_id = 3
         self.temp_external = 39
 
         self.filter_pressure_diff = 1523
-        self.filter_status_ok = True
-        self.filter_threshold = 1723
+        self.filter_status_ok = False
+        self.filter_threshold = 1423
 
         self.fans_abs_min_rpm = 2000
         self.fans_abs_max_rpm = 7000
