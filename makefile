@@ -15,5 +15,8 @@ lint:
 freeze:
 	source env/bin/activate; pip freeze > requirements.txt
 
+test:
+	source env/bin/activate; pytest testing/tests.py
+
 run:
 	source env/bin/activate; export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py 

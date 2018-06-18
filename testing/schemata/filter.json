@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Filtration response schema",
+  "type": "object",
+  "properties": {
+    "pressure_diff": {"type": "number"},
+    "status_ok": {"type": "boolean"},
+    "threshold": {"type": "number"}
+  },
+  "required": ["pressure_diff", "status_ok", "threshold"],
+  "additionalProperties": false
+}

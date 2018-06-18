@@ -4,18 +4,23 @@ from assertions import assert_valid_schema
 import pytest
 
 
-def test_get_info(sess):
-    # Do whatever is necessary to create a user here…
+CONNECTION = 'http://localhost:12345'
 
-    response = sess.get('http://localhost:12345/info')
-    json_data = response.json()
+def test_get_info(session):
+    resp = session.get(CONNECTION + '/info').json()
+    assert_valid_schema(resp, 'info.json')
 
-    assert_valid_schema(json_data, 'info.json')
+def test_get_temperature(session):
+    resp = session.get(CONNECTION + '/temp').json()
+    assert_valid_schema(resp, 'temp.json')
+
+def test_get_filtration(session):
+    resp = session.get(CONNECTION + '/filter').json()
+    assert_valid_schema(resp, 'filter.json')
 
 @pytest.fixture
-def sess():
-    container_conn = 'http://localhost:12345'
-    sess = requests.Session()
+def session():
+    session = requests.Session()
     adapter = requests.adapters.HTTPAdapter(max_retries=10)
-    sess.mount('http://', adapter)
-    return sess
+    session.mount('http://', adapter)
+    return session

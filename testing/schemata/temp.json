@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Temperature response schema",
+  "type": "object",
+  "properties": {
+    "measurements": {"type": "object"},
+    "patternProperties": {
+      "properties": {
+      "^.*$": {"type": "number"}
+      }
+    },
+    "target": {"type": "number"},
+    "sensor_id": {"type": "number"},
+    "external": {"type": "number"}
+  },
+  "required": ["measurements", "target", "sensor_id", "external"],
+  "additionalProperties": false
+}
