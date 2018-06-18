@@ -37,6 +37,8 @@ class Info(Resource):
     def put(self):
         args = PARSER.parse_args()
         MOCK.number_of_miners = args['number_of_miners']
+        # Slicing to remove mock values
+        MOCK.miners = MOCK.miners[:MOCK.number_of_miners]
         return '', 200
 
 class Temperature(Resource):
@@ -167,7 +169,8 @@ class Config(Resource):
         MOCK.fans_min_rpm = args['min_rpm']
         MOCK.fans_max_rpm = args['max_rpm']
         MOCK.active_mode = args['active_mode']
-        MOCK.number_of_miners  = args['number_of_miners']
+        MOCK.number_of_miners = args['number_of_miners']
+        MOCK.miners = MOCK.miners[:MOCK.number_of_miners]
         MOCK.pid_proportional = args['proportional']
         MOCK.pid_integral = args['integral']
         MOCK.pid_derivative = args['derivative']
