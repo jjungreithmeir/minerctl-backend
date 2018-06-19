@@ -33,7 +33,7 @@ PARSER.add_argument('bias', type=int, help='PID bias value')
 
 PARSER.add_argument('number_of_miners', type=int, help='number of miners')
 
-PARSER.add_argument('action', type=int, help="miner action like 'toggle'")
+PARSER.add_argument('action', help="miner action like 'toggle'")
 PARSER.add_argument('id', type=int, help='miner id')
 
 class Info(Resource):
@@ -107,21 +107,21 @@ class Operation(Resource):
         return '', 200
 
 class MinerController(Resource):
-    def put(self):
+    def patch(self):
         args = PARSER.parse_args()
         action = args['action']
         id = args['id']
 
         if action == 'on':
-            MOCK.miners[miner_id] = True
+            MOCK.miners[id] = True
         elif action == 'off':
-            MOCK.miners[miner_id] = False
+            MOCK.miners[id] = False
         elif action == 'toggle':
-            MOCK.miners[miner_id] = not MOCK.miners[id]
+            MOCK.miners[id] = not MOCK.miners[id]
         elif action == 'deregister':
-            MOCK.miners[miner_id] = None
+            MOCK.miners[id] = None
         elif action == 'register':
-            MOCK.miners[miner_id] = False
+            MOCK.miners[id] = False
 
         return '', 200
 
@@ -200,7 +200,7 @@ API.add_resource(Temperature, '/temp')
 API.add_resource(Filtration, '/filter')
 API.add_resource(Ventilation, '/fans')
 API.add_resource(Operation, '/mode')
-API.add_resource(MinerController, '/miner')
+API.add_resource(MinerController, '/miner', methods=['GET', 'PATCH'])
 API.add_resource(PID, '/pid')
 API.add_resource(Config, '/cfg')
 
