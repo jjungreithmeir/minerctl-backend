@@ -108,11 +108,13 @@ class Operation(Resource):
 
 class MinerController(Resource):
     def patch(self):
+
         args = PARSER.parse_args()
         action = args['action']
         id = args['id']
 
-        if action == 'on':
+        if action == 'on' or action == 'register':
+            # new miners are turned on by default by default
             MOCK.miners[id] = True
         elif action == 'off':
             MOCK.miners[id] = False
@@ -120,8 +122,11 @@ class MinerController(Resource):
             MOCK.miners[id] = not MOCK.miners[id]
         elif action == 'deregister':
             MOCK.miners[id] = None
-        elif action == 'register':
-            MOCK.miners[id] = False
+        elif action == 'reset':
+            # TODO reset action
+            pass
+        else:
+            return '', 400
 
         return '', 200
 

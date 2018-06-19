@@ -36,7 +36,7 @@ def test_get_PID(session):
     assert_valid_schema(resp, 'config.json')
 
 def test_get_miner(session):
-    resp = session.get(CONNECTION + '/miner/' + \
+    resp = session.get(CONNECTION + '/miner?id=' + \
                        str(random.randint(0, 120))).json()
     assert_valid_schema(resp, 'miner_controller.json')
 

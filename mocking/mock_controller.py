@@ -44,9 +44,6 @@ class Controller:
         for i in range(120):
             if i > self.number_of_miners:
                 self.miners.append(None)
-            elif i < self.number_of_miners and self.miners[i] is None:
-                if i not in(99, 12, 30, 44):
-                    self.miners[i] = random.random() > 0.1
 
         self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
         self.filter_pressure_diff = random.randint(1425, 1450)
