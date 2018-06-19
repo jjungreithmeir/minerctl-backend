@@ -101,7 +101,7 @@ class Operation(Resource):
 
 class MinerController(Resource):
     def put(self, miner_id, action):
-        if action == 'on': # TODO change action based on mode
+        if action == 'on':
             MOCK.miners[miner_id] = True
             return '', 200
         elif action == 'off':
@@ -109,6 +109,10 @@ class MinerController(Resource):
             return '', 200
         elif action == 'toggle':
             MOCK.miners[miner_id] = not MOCK.miners[id]
+        elif action == 'deregister':
+            MOCK.miners[miner_id] = None
+        elif action == 'register':
+            MOCK.miners[miner_id] = False
 
         return '', 200
 
