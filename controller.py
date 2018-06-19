@@ -195,9 +195,9 @@ class Config(Resource):
         MOCK.pid_integral = args['integral']
         MOCK.pid_derivative = args['derivative']
         MOCK.pid_bias = args['bias']
-        #MOCK.op_gpu_ontime = args['ontime']
-        #MOCK.op_gpu_offtime = args['offtime']
-        #MOCK.op_fpga_restime = args['restime']
+        MOCK.op_gpu_ontime = args['ontime']
+        MOCK.op_gpu_offtime = args['offtime']
+        MOCK.op_fpga_restime = args['restime']
         return '', 200
 
 API.add_resource(Info, '/info')
