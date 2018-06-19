@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "PID response schema",
+  "type": "object",
+  "properties": {
+    "proportional": {"type": "number"},
+    "integral": {"type": "number"},
+    "derivative": {"type": "number"},
+    "bias": {"type": "number"}
+  },
+  "minProperties": 4,
+  "additionalProperties": false
+}

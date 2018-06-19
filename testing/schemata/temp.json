@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "title": "Temperature response schema",
   "type": "object",
   "properties": {
@@ -13,6 +13,6 @@
     "sensor_id": {"type": "number"},
     "external": {"type": "number"}
   },
-  "required": ["measurements", "target", "sensor_id", "external"],
+  "minProperties": 4,
   "additionalProperties": false
 }

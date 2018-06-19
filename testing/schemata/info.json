@@ -1,11 +1,11 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "title": "Info response schema",
   "type": "object",
   "properties": {
     "firmware_version": {"type": "string"},
     "number_of_miners": {"type": "number"}
   },
-  "required": ["firmware_version", "number_of_miners"],
+  "minProperties": 2,
   "additionalProperties": false
 }

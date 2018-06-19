@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Operation response schema",
+  "type": "object",
+  "properties": {
+    "active_mode": {"type": "string",
+      "enum": ["gpu", "fpga"]},
+    "ontime": { "type": "number" },
+    "offtime": { "type": "number" },
+    "restime": { "type": "number" }
+  },
+  "if": {
+    "properties": {
+      "active_mode": { "enum": ["gpu"] }
+    }
+  },
+  "then": { "required": ["ontime", "offtime"] },
+  "else": { "required": ["restime"] },
+  "minProperties": 2,
+  "additionalProperties": false
+}

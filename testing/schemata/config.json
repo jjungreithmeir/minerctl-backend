@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Config response schema",
+  "type": "object",
+  "properties": {
+    "fw_version": {"type": "string"},
+    "measurements": {"type": "object"},
+    "patternProperties": {
+      "properties": {
+      "^.*$": {"type": "number"}
+      }
+    },
+    "target": {"type": "number"},
+    "sensor_id": {"type": "number"},
+    "external": {"type": "number"},
+    "pressure_diff": {"type": "number"},
+    "status_ok": {"type": "boolean"},
+    "threshold": {"type": "number"},
+    "min_rpm": {"type": "number"},
+    "max_rpm": {"type": "number"},
+    "rpm": {"type": "number"},
+    "active_mode": {"type": "string",
+      "enum": ["gpu", "fpga"]},
+    "number_of_miners": {"type": "number"},
+    "proportional": {"type": "number"},
+    "integral": {"type": "number"},
+    "derivative": {"type": "number"},
+    "bias": {"type": "number"},
+    "ontime": {"type": "number"},
+    "offtime": {"type": "number"},
+    "restime": {"type": "number"},
+    "miners": { "type": "array",
+      "items": {
+        "type": ["boolean", "null"]
+      }
+    }
+  },
+  "minProperties": 21,
+  "additionalProperties": false
+}
