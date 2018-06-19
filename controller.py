@@ -10,10 +10,13 @@ MOCK = Controller()
 
 PARSER = reqparse.RequestParser()
 PARSER.add_argument('target', type=int, help='target temperature')
-PARSER.add_argument('sensor_id', type=int, help='id of main temperature measurement sensor')
-PARSER.add_argument('external', type=int, help='external temperature (e.g. miner temperature)')
+PARSER.add_argument('sensor_id', type=int, help='id of main \
+                    temperature measurement sensor')
+PARSER.add_argument('external', type=int, help='external temperature \
+                    (e.g. miner temperature)')
 
-PARSER.add_argument('threshold', type=int, help='pressure difference threshold at which the filter is to be changed')
+PARSER.add_argument('threshold', type=int, help='pressure difference\
+                    threshold at which the filter is to be changed')
 
 PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
 PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
@@ -30,10 +33,14 @@ PARSER.add_argument('bias', type=int, help='PID bias value')
 
 PARSER.add_argument('number_of_miners', type=int, help='number of miners')
 
+PARSER.add_argument('action', type=int, help="miner action like 'toggle'")
+PARSER.add_argument('id', type=int, help='miner id')
+
 class Info(Resource):
     def get(self):
         return {'firmware_version': MOCK.info_fw_version,
-                'number_of_miners': MOCK.number_of_miners} # TODO add database connection
+                'number_of_miners': MOCK.number_of_miners}
+        # TODO add database connection
     def put(self):
         args = PARSER.parse_args()
         MOCK.number_of_miners = args['number_of_miners']
@@ -100,13 +107,15 @@ class Operation(Resource):
         return '', 200
 
 class MinerController(Resource):
-    def put(self, miner_id, action):
+    def put(self):
+        args = PARSER.parse_args()
+        action = args['action']
+        id = args['id']
+
         if action == 'on':
             MOCK.miners[miner_id] = True
-            return '', 200
         elif action == 'off':
             MOCK.miners[miner_id] = False
-            return '', 200
         elif action == 'toggle':
             MOCK.miners[miner_id] = not MOCK.miners[id]
         elif action == 'deregister':
@@ -116,8 +125,10 @@ class MinerController(Resource):
 
         return '', 200
 
-    def get(self, miner_id):
-        return {'running': MOCK.miners[miner_id]}
+    def get(self):
+        args = PARSER.parse_args()
+        id = int(args['id'])
+        return {'running': MOCK.miners[id]}
 
 class PID(Resource):
     def get(self):
@@ -189,8 +200,7 @@ API.add_resource(Temperature, '/temp')
 API.add_resource(Filtration, '/filter')
 API.add_resource(Ventilation, '/fans')
 API.add_resource(Operation, '/mode')
-API.add_resource(MinerController, '/miner/<int:miner_id>/<string:action>',
-                 '/miner/<int:miner_id>')
+API.add_resource(MinerController, '/miner')
 API.add_resource(PID, '/pid')
 API.add_resource(Config, '/cfg')
 
