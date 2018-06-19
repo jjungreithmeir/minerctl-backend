@@ -1,8 +1,0 @@
-image: python:3.6.5
-pipelines:
-  default:
-    - step:
-        script:
-          - pip install requests
-          - pip install pytest
-          - pytest testing/tests.py
