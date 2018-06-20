@@ -21,10 +21,10 @@ PARSER.add_argument('threshold', type=int, help='pressure difference\
 PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
 PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
 
-PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'fpga'")
+PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'asic'")
 PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
 PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
-PARSER.add_argument('restime', type=int, help='fpga mode - restime')
+PARSER.add_argument('restime', type=int, help='asic mode - restime')
 
 PARSER.add_argument('proportional', type=int, help='PID P value')
 PARSER.add_argument('integral', type=int, help='PID I value')
@@ -83,8 +83,8 @@ class Operation(Resource):
         if MOCK.active_mode == 'gpu':
             resp['ontime'] = MOCK.op_gpu_ontime
             resp['offtime'] = MOCK.op_gpu_ontime
-        if MOCK.active_mode == 'fpga':
-            resp['restime'] = MOCK.op_fpga_restime
+        if MOCK.active_mode == 'asic':
+            resp['restime'] = MOCK.op_asic_restime
         return resp
 
     def put(self):
@@ -93,8 +93,8 @@ class Operation(Resource):
         if MOCK.active_mode == 'gpu':
             MOCK.op_gpu_ontime = args['ontime']
             MOCK.op_gpu_ontime = args['offtime']
-        if MOCK.active_mode == 'fpga':
-            MOCK.op_fpga_restime == args['restime']
+        if MOCK.active_mode == 'asic':
+            MOCK.op_asic_restime == args['restime']
         return '', 200
 
 class MinerController(Resource):
@@ -166,7 +166,7 @@ class Config(Resource):
                 'bias': MOCK.pid_bias,
                 'ontime': MOCK.op_gpu_ontime,
                 'offtime': MOCK.op_gpu_offtime,
-                'restime': MOCK.op_fpga_restime,
+                'restime': MOCK.op_asic_restime,
                 'miners': MOCK.miners
         }
 
@@ -186,7 +186,7 @@ class Config(Resource):
         MOCK.pid_bias = args['bias']
         MOCK.op_gpu_ontime = args['ontime']
         MOCK.op_gpu_offtime = args['offtime']
-        MOCK.op_fpga_restime = args['restime']
+        MOCK.op_asic_restime = args['restime']
         return '', 200
 
 API.add_resource(Info, '/info')

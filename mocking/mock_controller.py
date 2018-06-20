@@ -39,7 +39,7 @@ class Controller:
         self.op_gpu_ontime = 100
         self.op_gpu_offtime = 200
 
-        self.op_fpga_restime = 1200
+        self.op_asic_restime = 1200
 
     def randomize_variables(self):
         for i in range(120):

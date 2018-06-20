@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "active_mode": {"type": "string",
-      "enum": ["gpu", "fpga"]},
+      "enum": ["gpu", "asic"]},
     "ontime": { "type": "number" },
     "offtime": { "type": "number" },
     "restime": { "type": "number" }

@@ -20,7 +20,7 @@
     "max_rpm": {"type": "number"},
     "rpm": {"type": "number"},
     "active_mode": {"type": "string",
-      "enum": ["gpu", "fpga"]},
+      "enum": ["gpu", "asic"]},
     "proportional": {"type": "number"},
     "integral": {"type": "number"},
     "derivative": {"type": "number"},
