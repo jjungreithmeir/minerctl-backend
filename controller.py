@@ -31,22 +31,13 @@ PARSER.add_argument('integral', type=int, help='PID I value')
 PARSER.add_argument('derivative', type=int, help='PID D value')
 PARSER.add_argument('bias', type=int, help='PID bias value')
 
-PARSER.add_argument('number_of_miners', type=int, help='number of miners')
-
 PARSER.add_argument('action', help="miner action like 'toggle'")
 PARSER.add_argument('id', type=int, help='miner id')
 
 class Info(Resource):
     def get(self):
-        return {'firmware_version': MOCK.info_fw_version,
-                'number_of_miners': MOCK.number_of_miners}
+        return {'firmware_version': MOCK.info_fw_version}
         # TODO add database connection
-    def put(self):
-        args = PARSER.parse_args()
-        MOCK.number_of_miners = args['number_of_miners']
-        # Slicing to remove mock values
-        MOCK.miners = MOCK.miners[:MOCK.number_of_miners]
-        return '', 200
 
 class Temperature(Resource):
     def get(self):
@@ -169,7 +160,6 @@ class Config(Resource):
                 'max_rpm': MOCK.fans_max_rpm,
                 'rpm': MOCK.fans_rpm,
                 'active_mode': MOCK.active_mode,
-                'number_of_miners': MOCK.number_of_miners,
                 'proportional': MOCK.pid_proportional,
                 'integral': MOCK.pid_integral,
                 'derivative': MOCK.pid_derivative,
@@ -189,8 +179,7 @@ class Config(Resource):
         MOCK.fans_min_rpm = args['min_rpm']
         MOCK.fans_max_rpm = args['max_rpm']
         MOCK.active_mode = args['active_mode']
-        MOCK.number_of_miners = args['number_of_miners']
-        MOCK.miners = MOCK.miners[:MOCK.number_of_miners]
+        MOCK.miners = MOCK.miners[:MOCK._max_number_of_miners]
         MOCK.pid_proportional = args['proportional']
         MOCK.pid_integral = args['integral']
         MOCK.pid_derivative = args['derivative']

@@ -19,9 +19,10 @@ class Controller:
 
         self.active_mode = 'gpu'
 
-        self.number_of_miners = 120
+        # internal max
+        self._max_number_of_miners = 120
         self.miners = []
-        for miner in range(self.number_of_miners):
+        for miner in range(self._max_number_of_miners):
             self.miners.append(random.random() > 0.1)
 
         # simulate missing rigs
@@ -42,7 +43,7 @@ class Controller:
 
     def randomize_variables(self):
         for i in range(120):
-            if i > self.number_of_miners:
+            if i > self._max_number_of_miners:
                 self.miners.append(None)
 
         self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}

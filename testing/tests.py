@@ -31,7 +31,7 @@ def test_get_PID(session):
     resp = session.get(CONNECTION + '/pid').json()
     assert_valid_schema(resp, 'pid.json')
 
-def test_get_PID(session):
+def test_get_config(session):
     resp = session.get(CONNECTION + '/cfg').json()
     assert_valid_schema(resp, 'config.json')
 

@@ -3,9 +3,8 @@
   "title": "Info response schema",
   "type": "object",
   "properties": {
-    "firmware_version": {"type": "string"},
-    "number_of_miners": {"type": "number"}
+    "firmware_version": {"type": "string"}
   },
-  "minProperties": 2,
+  "minProperties": 1,
   "additionalProperties": false
 }

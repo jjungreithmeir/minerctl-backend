@@ -21,7 +21,6 @@
     "rpm": {"type": "number"},
     "active_mode": {"type": "string",
       "enum": ["gpu", "fpga"]},
-    "number_of_miners": {"type": "number"},
     "proportional": {"type": "number"},
     "integral": {"type": "number"},
     "derivative": {"type": "number"},
@@ -35,6 +34,6 @@
       }
     }
   },
-  "minProperties": 21,
+  "minProperties": 20,
   "additionalProperties": false
 }
