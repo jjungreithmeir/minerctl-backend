@@ -4,6 +4,9 @@ from flask import Flask
 from flask_restful import Resource, Api, abort, reqparse
 
 MOCK = Controller()
+APP = Flask(__name__)
+API = Api(APP)
+PARSER = reqparse.RequestParser()
 
 class Info(Resource):
     def get(self):
@@ -160,10 +163,6 @@ class Config(Resource):
         return '', 200
 
 def prepare_app():
-    APP = Flask(__name__)
-    API = Api(APP)
-
-    PARSER = reqparse.RequestParser()
     PARSER.add_argument('target', type=int, help='target temperature')
     PARSER.add_argument('sensor_id', type=int, help='id of main \
                         temperature measurement sensor')
