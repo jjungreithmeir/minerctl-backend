@@ -3,41 +3,11 @@ from mocking.mock_controller import Controller
 from flask import Flask
 from flask_restful import Resource, Api, abort, reqparse
 
-APP = Flask(__name__)
-API = Api(APP)
-
 MOCK = Controller()
-
-PARSER = reqparse.RequestParser()
-PARSER.add_argument('target', type=int, help='target temperature')
-PARSER.add_argument('sensor_id', type=int, help='id of main \
-                    temperature measurement sensor')
-PARSER.add_argument('external', type=int, help='external temperature \
-                    (e.g. miner temperature)')
-
-PARSER.add_argument('threshold', type=int, help='pressure difference\
-                    threshold at which the filter is to be changed')
-
-PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
-PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
-
-PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'asic'")
-PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
-PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
-PARSER.add_argument('restime', type=int, help='asic mode - restime')
-
-PARSER.add_argument('proportional', type=int, help='PID P value')
-PARSER.add_argument('integral', type=int, help='PID I value')
-PARSER.add_argument('derivative', type=int, help='PID D value')
-PARSER.add_argument('bias', type=int, help='PID bias value')
-
-PARSER.add_argument('action', help="miner action like 'toggle'")
-PARSER.add_argument('id', type=int, help='miner id')
 
 class Info(Resource):
     def get(self):
         return {'firmware_version': MOCK.info_fw_version}
-        # TODO add database connection
 
 class Temperature(Resource):
     def get(self):
@@ -189,14 +159,50 @@ class Config(Resource):
         MOCK.op_asic_restime = args['restime']
         return '', 200
 
-API.add_resource(Info, '/info')
-API.add_resource(Temperature, '/temp')
-API.add_resource(Filtration, '/filter')
-API.add_resource(Ventilation, '/fans')
-API.add_resource(Operation, '/mode')
-API.add_resource(MinerController, '/miner', methods=['GET', 'PATCH'])
-API.add_resource(PID, '/pid')
-API.add_resource(Config, '/cfg')
+def prepare_app():
+    APP = Flask(__name__)
+    API = Api(APP)
+
+    PARSER = reqparse.RequestParser()
+    PARSER.add_argument('target', type=int, help='target temperature')
+    PARSER.add_argument('sensor_id', type=int, help='id of main \
+                        temperature measurement sensor')
+    PARSER.add_argument('external', type=int, help='external temperature \
+                        (e.g. miner temperature)')
+
+    PARSER.add_argument('threshold', type=int, help='pressure difference\
+                        threshold at which the filter is to be changed')
+
+    PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
+    PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
+
+    PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'asic'")
+    PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
+    PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
+    PARSER.add_argument('restime', type=int, help='asic mode - restime')
+
+    PARSER.add_argument('proportional', type=int, help='PID P value')
+    PARSER.add_argument('integral', type=int, help='PID I value')
+    PARSER.add_argument('derivative', type=int, help='PID D value')
+    PARSER.add_argument('bias', type=int, help='PID bias value')
+
+    PARSER.add_argument('action', help="miner action like 'toggle'")
+    PARSER.add_argument('id', type=int, help='miner id')
+
+    API.add_resource(Info, '/info')
+    API.add_resource(Temperature, '/temp')
+    API.add_resource(Filtration, '/filter')
+    API.add_resource(Ventilation, '/fans')
+    API.add_resource(Operation, '/mode')
+    API.add_resource(MinerController, '/miner', methods=['GET', 'PATCH'])
+    API.add_resource(PID, '/pid')
+    API.add_resource(Config, '/cfg')
+
+    return APP
+
+def create_app(host='127.0.0.1', port='12345'):
+    app = prepare_app()
+    app.run(host=host, port=port)
 
 if __name__ == '__main__':
-    APP.run(port=12345)
+    create_app()

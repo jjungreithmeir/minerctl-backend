@@ -1,9 +1,13 @@
 import json
 import requests
 import random
-from assertions import assert_valid_schema
 import pytest
-
+import sys
+# for some strange unexplainable reason I need to add the current folder to the
+# sys.path
+sys.path.append('.')
+from testing.assertions import assert_valid_schema
+from controller import create_app
 
 CONNECTION = 'http://localhost:12345'
 
