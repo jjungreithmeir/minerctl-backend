@@ -19,7 +19,7 @@ class Temperature(Resource):
                 'target': MOCK.temp_target,
                 'sensor_id': MOCK.temp_sensor_id,
                 'external': MOCK.temp_external}
-    def patch(self, target, sensor_id, external):
+    def patch(self):
         args = PARSER.parse_args()
         MOCK.temp_target = args['target']
         MOCK.temp_sensor_id = args['sensor_id']
@@ -55,8 +55,8 @@ class Operation(Resource):
         resp = {'active_mode': MOCK.active_mode}
         if MOCK.active_mode == 'gpu':
             resp['ontime'] = MOCK.op_gpu_ontime
-            resp['offtime'] = MOCK.op_gpu_ontime
-        if MOCK.active_mode == 'asic':
+            resp['offtime'] = MOCK.op_gpu_offtime
+        elif MOCK.active_mode == 'asic':
             resp['restime'] = MOCK.op_asic_restime
         return resp
 
@@ -65,9 +65,9 @@ class Operation(Resource):
         MOCK.active_mode = args['active_mode']
         if MOCK.active_mode == 'gpu':
             MOCK.op_gpu_ontime = args['ontime']
-            MOCK.op_gpu_ontime = args['offtime']
+            MOCK.op_gpu_offtime = args['offtime']
         if MOCK.active_mode == 'asic':
-            MOCK.op_asic_restime == args['restime']
+            MOCK.op_asic_restime = args['restime']
         return '', 200
 
 class MinerController(Resource):
@@ -77,11 +77,9 @@ class MinerController(Resource):
         return {'running': MOCK.miners[id]}
 
     def patch(self):
-
         args = PARSER.parse_args()
         action = args['action']
         id = args['id']
-
         if action == 'on' or action == 'register':
             # new miners are turned on by default by default
             MOCK.miners[id] = True
@@ -152,7 +150,6 @@ class Config(Resource):
         MOCK.fans_min_rpm = args['min_rpm']
         MOCK.fans_max_rpm = args['max_rpm']
         MOCK.active_mode = args['active_mode']
-        MOCK.miners = MOCK.miners[:MOCK._max_number_of_miners]
         MOCK.pid_proportional = args['proportional']
         MOCK.pid_integral = args['integral']
         MOCK.pid_derivative = args['derivative']
@@ -188,14 +185,14 @@ def prepare_app():
     PARSER.add_argument('action', help="miner action like 'toggle'")
     PARSER.add_argument('id', type=int, help='miner id')
 
-    API.add_resource(Info, '/info')
-    API.add_resource(Temperature, '/temp')
-    API.add_resource(Filtration, '/filter')
-    API.add_resource(Ventilation, '/fans')
-    API.add_resource(Operation, '/mode')
+    API.add_resource(Info, '/info', methods=['GET'])
+    API.add_resource(Temperature, '/temp', methods=['GET', 'PATCH'])
+    API.add_resource(Filtration, '/filter', methods=['GET', 'PATCH'])
+    API.add_resource(Ventilation, '/fans', methods=['GET', 'PATCH'])
+    API.add_resource(Operation, '/mode', methods=['GET', 'PATCH'])
     API.add_resource(MinerController, '/miner', methods=['GET', 'PATCH'])
-    API.add_resource(PID, '/pid')
-    API.add_resource(Config, '/cfg')
+    API.add_resource(PID, '/pid', methods=['GET', 'PUT'])
+    API.add_resource(Config, '/cfg', methods=['GET', 'PATCH'])
 
     return APP
 
