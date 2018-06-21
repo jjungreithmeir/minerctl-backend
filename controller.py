@@ -19,7 +19,7 @@ class Temperature(Resource):
                 'target': MOCK.temp_target,
                 'sensor_id': MOCK.temp_sensor_id,
                 'external': MOCK.temp_external}
-    def put(self, target, sensor_id, external):
+    def patch(self, target, sensor_id, external):
         args = PARSER.parse_args()
         MOCK.temp_target = args['target']
         MOCK.temp_sensor_id = args['sensor_id']
@@ -32,7 +32,7 @@ class Filtration(Resource):
         return {'pressure_diff': MOCK.filter_pressure_diff,
                 'status_ok': MOCK.filter_status_ok,
                 'threshold': MOCK.filter_threshold}
-    def put(self):
+    def patch(self):
         args = PARSER.parse_args()
         MOCK.filter_threshold = args['threshold']
         return '', 200
@@ -44,7 +44,7 @@ class Ventilation(Resource):
                 'max_rpm': MOCK.fans_max_rpm,
                 'rpm': MOCK.fans_rpm}
 
-    def put(self):
+    def patch(self):
         args = PARSER.parse_args()
         MOCK.fans_min_rpm = args['min_rpm']
         MOCK.fans_max_rpm = args['max_rpm']
@@ -60,7 +60,7 @@ class Operation(Resource):
             resp['restime'] = MOCK.op_asic_restime
         return resp
 
-    def put(self):
+    def patch(self):
         args = PARSER.parse_args()
         MOCK.active_mode = args['active_mode']
         if MOCK.active_mode == 'gpu':
@@ -71,6 +71,11 @@ class Operation(Resource):
         return '', 200
 
 class MinerController(Resource):
+    def get(self):
+        args = PARSER.parse_args()
+        id = int(args['id'])
+        return {'running': MOCK.miners[id]}
+
     def patch(self):
 
         args = PARSER.parse_args()
@@ -93,11 +98,6 @@ class MinerController(Resource):
             return '', 400
 
         return '', 200
-
-    def get(self):
-        args = PARSER.parse_args()
-        id = int(args['id'])
-        return {'running': MOCK.miners[id]}
 
 class PID(Resource):
     def get(self):
@@ -143,7 +143,7 @@ class Config(Resource):
                 'miners': MOCK.miners
         }
 
-    def put(self):
+    def patch(self):
         args = PARSER.parse_args()
         MOCK.temp_target = args['target']
         MOCK.temp_sensor_id = args['sensor_id']
