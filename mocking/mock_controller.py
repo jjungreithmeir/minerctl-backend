@@ -4,7 +4,9 @@ class Controller:
     def __init__(self):
         self.info_fw_version = '0.0.1'
 
-        self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
+        self.temp_measurements = {0: random.randint(40, 45),
+                                  1: random.randint(38, 47),
+                                  2: random.randint(42, 55)}
         self.temp_target = 45
         self.temp_sensor_id = 2
         self.temp_external = 32
@@ -46,6 +48,8 @@ class Controller:
             if i > self._max_number_of_miners:
                 self.miners.append(None)
 
-        self.temp_measurements = {0: random.randint(40, 45), 1: random.randint(38, 47), 2: random.randint(42, 55)}
+        self.temp_measurements = {0: random.randint(40, 45),
+                                  1: random.randint(38, 47),
+                                  2: random.randint(42, 55)}
         self.filter_pressure_diff = random.randint(1425, 1450)
         self.fans_rpm = random.randint(50, 65)
