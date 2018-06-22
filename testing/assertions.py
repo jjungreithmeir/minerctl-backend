@@ -19,7 +19,7 @@ def _load_json_schema(filename):
         return json.loads(schema_file.read())
 
 def assert_same_dict_content(expected, actual):
-    for key, value in expected.items():
+    for key, _ in expected.items():
         if not expected[key] == actual[key]:
             return False
     return True

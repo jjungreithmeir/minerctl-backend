@@ -1,13 +1,11 @@
-import json
-import requests
 import random
-import pytest
 import sys
+import requests
+import pytest
 # for some strange unexplainable reason I need to add the current folder to the
 # sys.path
 sys.path.append('.')
 from testing.assertions import assert_valid_schema, assert_same_dict_content
-from controller import create_app
 
 CONNECTION = 'http://localhost:12345'
 
@@ -76,7 +74,7 @@ def test_get_operation(session):
 
 def test_patch_operation_gpu(session):
     mode = 'gpu'
-    rand_ontime = random.randint(50,1000)
+    rand_ontime = random.randint(50, 1000)
     rand_offtime = random.randint(50, 1000)
     data = {'active_mode': mode, 'ontime': rand_ontime, 'offtime': rand_offtime}
     session.patch(CONNECTION + '/mode', data=data)
@@ -85,7 +83,7 @@ def test_patch_operation_gpu(session):
 
 def test_patch_operation_asic(session):
     mode = 'asic'
-    rand_restime = random.randint(50,1000)
+    rand_restime = random.randint(50, 1000)
     data = {'active_mode': mode, 'restime': rand_restime}
     session.patch(CONNECTION + '/mode', data=data)
     resp = session.get(CONNECTION + '/mode').json()
@@ -118,8 +116,8 @@ def test_patch_config(session):
     rand_min_rpm = random.randint(1, 20)
     rand_max_rpm = random.randint(21, 100)
     mode = 'asic'
-    rand_restime = random.randint(50,1000)
-    rand_ontime = random.randint(50,1000)
+    rand_restime = random.randint(50, 1000)
+    rand_ontime = random.randint(50, 1000)
     rand_offtime = random.randint(50, 1000)
     rand_pidp = random.randint(0, 10)
     rand_pidi = random.randint(0, 20)

@@ -1,7 +1,7 @@
-import types
-from mocking.mock_controller import Controller
 from flask import Flask
-from flask_restful import Resource, Api, abort, reqparse
+from flask_restful import Resource, Api, reqparse
+from mocking.mock_controller import Controller
+
 
 MOCK = Controller()
 APP = Flask(__name__)
@@ -73,22 +73,22 @@ class Operation(Resource):
 class MinerController(Resource):
     def get(self):
         args = PARSER.parse_args()
-        id = int(args['id'])
-        return {'running': MOCK.miners[id]}
+        miner_id = int(args['id'])
+        return {'running': MOCK.miners[miner_id]}
 
     def patch(self):
         args = PARSER.parse_args()
         action = args['action']
-        id = args['id']
+        miner_id = args['id']
         if action == 'on' or action == 'register':
-            # new miners are turned on by default by default
-            MOCK.miners[id] = True
+            # new miners are turned on by default
+            MOCK.miners[miner_id] = True
         elif action == 'off':
-            MOCK.miners[id] = False
+            MOCK.miners[miner_id] = False
         elif action == 'toggle':
-            MOCK.miners[id] = not MOCK.miners[id]
+            MOCK.miners[miner_id] = not MOCK.miners[miner_id]
         elif action == 'deregister':
-            MOCK.miners[id] = None
+            MOCK.miners[miner_id] = None
         elif action == 'reset':
             # TODO reset action
             pass
@@ -138,8 +138,7 @@ class Config(Resource):
                 'ontime': MOCK.op_gpu_ontime,
                 'offtime': MOCK.op_gpu_offtime,
                 'restime': MOCK.op_asic_restime,
-                'miners': MOCK.miners
-        }
+                'miners': MOCK.miners}
 
     def patch(self):
         args = PARSER.parse_args()
@@ -172,7 +171,8 @@ def prepare_app():
     PARSER.add_argument('min_rpm', type=int, help='minimum fan rpm')
     PARSER.add_argument('max_rpm', type=int, help='maximimum fan rpm')
 
-    PARSER.add_argument('active_mode', help="operational mode = 'gpu' or 'asic'")
+    PARSER.add_argument('active_mode',
+                        help="operational mode = 'gpu' or 'asic'")
     PARSER.add_argument('ontime', type=int, help='gpu mode - ontime')
     PARSER.add_argument('offtime', type=int, help='gpu mode - offtime')
     PARSER.add_argument('restime', type=int, help='asic mode - restime')
