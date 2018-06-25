@@ -2,11 +2,13 @@ from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from mocking.mock_controller import Controller
+from src.config_reader import ConfigReader
 
 MOCK = Controller()
 APP = Flask(__name__)
 APP.config['JWT_ALGORITHM'] = 'RS256'
-with open('config/jwtRS256.key.pub', 'rb') as file:
+CFG_RDR = ConfigReader(path='config/config.ini')
+with open(CFG_RDR.get_attr('public_key_file_location'), 'rb') as file:
     APP.config['JWT_PUBLIC_KEY'] = file.read()
 
 JWT = JWTManager(APP)

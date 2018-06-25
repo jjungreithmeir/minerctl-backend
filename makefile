@@ -1,6 +1,7 @@
 all: clean run
 
 install:
+	virtualenv env;
 	source env/bin/activate; pip install -r requirements.txt \
 
 clean:
@@ -19,4 +20,4 @@ test:
 	source env/bin/activate; pytest tests.py
 
 run:
-	source env/bin/activate; export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py 
+	source env/bin/activate; export FLASK_APP=controller.py; export FLASK_ENV=development; python controller.py
