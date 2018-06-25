@@ -1,4 +1,5 @@
 config/jwtRS256.key*
+testing/jwtRS256.key*
 env/
 # Byte-compiled / optimized / DLL files
 __pycache__/
