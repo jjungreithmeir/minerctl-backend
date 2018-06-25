@@ -1,18 +1,25 @@
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from mocking.mock_controller import Controller
-
 
 MOCK = Controller()
 APP = Flask(__name__)
+APP.config['JWT_ALGORITHM'] = 'RS256'
+with open('config/jwtRS256.key.pub', 'rb') as file:
+    APP.config['JWT_PUBLIC_KEY'] = file.read()
+
+JWT = JWTManager(APP)
 API = Api(APP)
 PARSER = reqparse.RequestParser()
 
 class Info(Resource):
+    @jwt_required
     def get(self):
         return {'firmware_version': MOCK.info_fw_version}
 
 class Temperature(Resource):
+    @jwt_required
     def get(self):
         MOCK.randomize_variables()
         return {'measurements': MOCK.temp_measurements,
@@ -27,6 +34,7 @@ class Temperature(Resource):
         return '', 200
 
 class Filtration(Resource):
+    @jwt_required
     def get(self):
         MOCK.randomize_variables()
         return {'pressure_diff': MOCK.filter_pressure_diff,
@@ -38,6 +46,7 @@ class Filtration(Resource):
         return '', 200
 
 class Ventilation(Resource):
+    @jwt_required
     def get(self):
         MOCK.randomize_variables()
         return {'min_rpm': MOCK.fans_min_rpm,
@@ -51,6 +60,7 @@ class Ventilation(Resource):
         return '', 200
 
 class Operation(Resource):
+    @jwt_required
     def get(self):
         resp = {'active_mode': MOCK.active_mode}
         if MOCK.active_mode == 'gpu':
@@ -71,6 +81,7 @@ class Operation(Resource):
         return '', 200
 
 class MinerController(Resource):
+    @jwt_required
     def get(self):
         args = PARSER.parse_args()
         miner_id = int(args['id'])
@@ -98,6 +109,7 @@ class MinerController(Resource):
         return '', 200
 
 class PID(Resource):
+    @jwt_required
     def get(self):
         return {'proportional': MOCK.pid_proportional,
                 'integral': MOCK.pid_integral,
@@ -117,6 +129,7 @@ class Config(Resource):
     centralized views such as a /settings page which shows all configurable
     options and/or allows setting values with a single request.
     """
+    @jwt_required
     def get(self):
         MOCK.randomize_variables()
         return {'fw_version': MOCK.info_fw_version,
