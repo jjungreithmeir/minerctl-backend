@@ -1,3 +1,5 @@
+"""Small test suite. Requires the backend server to be running at
+localhost:12345 and the respective private key of an artificial user."""
 import random
 import sys
 import requests

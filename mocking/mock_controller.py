@@ -1,6 +1,11 @@
 import random
 
 class Controller:
+    """
+    This class acts as a dumb wrapper for currently non-existing
+    microcontroller.
+    """
+
     def __init__(self):
         self.info_fw_version = '0.0.1'
 
@@ -44,6 +49,9 @@ class Controller:
         self.op_asic_restime = 1200
 
     def randomize_variables(self):
+        """
+        Mocking changes in variables.
+        """
         for i in range(120):
             if i > self._max_number_of_miners:
                 self.miners.append(None)

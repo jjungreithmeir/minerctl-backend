@@ -1,3 +1,8 @@
+"""
+Small collection of classes that map JSON resources. The name of each class
+method corresponds to the HTTP request method name. To define the names of the
+endpoints one simply has to add the resource in the `prepare_app` function
+"""
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
@@ -174,6 +179,9 @@ class Config(Resource):
         return '', 200
 
 def prepare_app():
+    """
+    Adding parser arguments and setting up resources.
+    """
     PARSER.add_argument('target', type=int, help='target temperature')
     PARSER.add_argument('sensor_id', type=int, help='id of main \
                         temperature measurement sensor')

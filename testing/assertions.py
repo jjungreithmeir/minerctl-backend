@@ -1,3 +1,4 @@
+"""Small helper module for unit tests."""
 import json
 from os.path import join, dirname
 from jsonschema import validate
@@ -19,6 +20,12 @@ def _load_json_schema(filename):
         return json.loads(schema_file.read())
 
 def assert_same_dict_content(expected, actual):
+    """
+    Checks whether the content of expected is also found in actual. If actual
+    has additional items, the result is still true.
+
+    :returns: bool value
+    """
     for key, _ in expected.items():
         if not expected[key] == actual[key]:
             return False
