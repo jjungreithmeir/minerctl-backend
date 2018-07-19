@@ -133,7 +133,7 @@ class Microcontroller:
         elif name == "miners":
             return object.__getattribute__(self, name)
         elif name == "info_fw_version":
-            return _read("?{}".format(name))
+            return _read("?{}".format(CMD_DICT[name]))
         elif name == "filter_status_ok":
             return bool(_read("?{}".format(name)))
         else:
