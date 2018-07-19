@@ -27,6 +27,16 @@ CMD_DICT = {
 }
 
 class MinerIterator:
+    """
+    WARNING! Previously the MinerList was just realized as a simple list of
+    bool & None values. However, after coupling the list to the mc
+    (thus leading to the creation of MinerList), the container functionality
+    had to be replicated. As far as I understand iterators it is currently not
+    possible to replicate the iterator assignment functionality.
+    (eg for miner in MinerList(120): miner = True)
+    Therefore, you can only read values with the iterator, if you want to set
+    them you have to access them by their respective indices.
+    """
     def __init__(self, miners):
         self._miners = miners
         self._index = 0

@@ -219,8 +219,11 @@ def prepare_app():
     return APP
 
 def create_app(host='127.0.0.1', port='12345'):
+    """
+    Currently this flask API is only running single threaded as parallel access to the Microcontroller class breaks the communication with the serial interface. In future version an additonal microservice, such as a RPC service which handles the requests to the serial interface would probably be ideal, as this workaround leads to severe performance decreases.
+    """
     app = prepare_app()
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, threaded=False)
 
 if __name__ == '__main__':
     create_app()
