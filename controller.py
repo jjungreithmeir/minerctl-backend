@@ -157,7 +157,7 @@ class Config(Resource):
                 'ontime': MC.op_gpu_ontime,
                 'offtime': MC.op_gpu_offtime,
                 'restime': MC.op_asic_restime,
-                'miners': MC.miners.serialize()}
+                'miners': MC.miners.get_all()}
 
     def patch(self):
         args = PARSER.parse_args()

@@ -1,7 +1,7 @@
 import serial
 import time
 
-SET_ACTIONS = {None: -1, False: 0, True: 1}
+SET_ACTIONS = {None: 255, False: 0, True: 1}
 GET_ACTIONS = {SET_ACTIONS[None]: None,
                SET_ACTIONS[False]: False,
                SET_ACTIONS[True]: True}
@@ -50,7 +50,6 @@ class MinerList:
         state = int(_read("?miner {}".format(key)))
         return GET_ACTIONS[state]
     def __setitem__(self, key, value):
-        print("!miner {} {}".format(key, SET_ACTIONS[value]))
         _write("!miner {} {}".format(key, SET_ACTIONS[value]))
     def __iter__(self):
         #TODO fix iterator
@@ -61,6 +60,12 @@ class MinerList:
             state = int(_read("?miner {}".format(miner)))
             states.append(GET_ACTIONS[state])
         return states
+    def get_all(self):
+        resp = _read("?miners")
+        miner_list = []
+        for miner in resp.split(', '):
+            miner_list.append(GET_ACTIONS[int(miner)])
+        return miner_list
 
 # TODO change parameters based on config file
 SERIAL = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
@@ -135,6 +140,6 @@ class Microcontroller:
         elif name == "info_fw_version":
             return _read("?{}".format(CMD_DICT[name]))
         elif name == "filter_status_ok":
-            return bool(_read("?{}".format(name)))
+            return bool(_read("?{}".format(CMD_DICT[name])))
         else:
             return int(_read("?{}".format(CMD_DICT[name])))
