@@ -40,7 +40,6 @@ def test_get_temperature(session, headers):
     resp = session.get(CONNECTION + '/temp', headers=headers).json()
     assert_valid_schema(resp, 'temp.json')
 
-
 def test_patch_temperature(session, headers):
     rand_target = random.randint(20, 30)
     rand_sensor_id = random.randint(0, 4)

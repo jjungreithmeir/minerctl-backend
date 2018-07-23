@@ -31,7 +31,8 @@ CMD_DICT = {
     'pid_bias': 'pidb',
     'op_gpu_ontime': 'ontime',
     'op_gpu_offtime': 'offtime',
-    'op_asic_restime': 'restime'
+    'op_asic_restime': 'restime',
+    'commit_frequency': 'frequency'
 }
 
 class MinerIterator:
@@ -145,7 +146,7 @@ class Microcontroller:
         self.op_gpu_offtime = None
         self.op_asic_restime = None
         self.commit = None
-        self.commit_frequency = 12
+        self.commit_frequency = None
 
     def __setattr__(self, name, value):
         if value is None or name.startswith("_"):
@@ -157,7 +158,7 @@ class Microcontroller:
             elif value == "asic":
                 mode_id = 1
             _write("!mode {}".format(mode_id))
-        elif name == "miners" or name == "commit_frequency":
+        elif name == "miners":
             object.__setattr__(self, name, value)
         elif name == "commit":
             _read("!commit")
@@ -177,7 +178,7 @@ class Microcontroller:
             mode_id = int(_read("?mode"))
             modes = ["gpu", "asic"]
             return modes[mode_id]
-        elif name == "miners" or name == "commit_frequency":
+        elif name == "miners":
             return object.__getattribute__(self, name)
         elif name == "info_fw_version":
             return _read("?{}".format(CMD_DICT[name]))
