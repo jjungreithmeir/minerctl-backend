@@ -247,5 +247,8 @@ def create_app(host='127.0.0.1', port='12345'):
     app = prepare_app()
     app.run(host=host, port=port, threaded=False)
 
+# This is sadly needed for the uwsgi entry points
+prepare_app()
+
 if __name__ == '__main__':
     create_app()

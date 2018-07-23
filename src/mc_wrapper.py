@@ -97,8 +97,7 @@ class MinerList:
 
 CFG_RDR = ConfigReader(path='config/config.ini')
 SERIAL = serial.Serial(CFG_RDR.get_attr('serial_port'),
-                       CFG_RDR.get_attr('baudrate'),
-                       timeout=1)
+                       CFG_RDR.get_attr('baudrate'))
 
 def _read(cmd):
     """
@@ -134,9 +133,9 @@ class Microcontroller:
         self.fans_max_rpm = None
         self.fans_rpm = None
         self.active_mode = None
-        # TODO correctly init this
-        self._max_number_of_miners = 120
-        self.miners = MinerList(120)
+
+        self._max_number_of_miners = _read("?maxminers")
+        self.miners = MinerList(self._max_number_of_miners)
 
         self.pid_proportional = None
         self.pid_integral = None
