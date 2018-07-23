@@ -33,7 +33,6 @@ class Temperature(Resource):
                 'sensor_id': MC.temp_sensor_id,
                 'external': MC.temp_external}
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.temp_target = args['target']
@@ -49,7 +48,6 @@ class Filtration(Resource):
                 'status_ok': MC.filter_status_ok,
                 'threshold': MC.filter_threshold}
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.filter_threshold = args['threshold']
@@ -63,7 +61,6 @@ class Ventilation(Resource):
                 'max_rpm': MC.fans_max_rpm,
                 'rpm': MC.fans_rpm}
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.fans_min_rpm = args['min_rpm']
@@ -81,7 +78,6 @@ class Operation(Resource):
             resp['restime'] = MC.op_asic_restime
         return resp
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.active_mode = args['active_mode']
@@ -99,7 +95,6 @@ class MinerController(Resource):
         miner_id = int(args['id'])
         return {'running': MC.miners[miner_id]}
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         action = args['action']
@@ -129,7 +124,6 @@ class PID(Resource):
                 'derivative': MC.pid_derivative,
                 'bias': MC.pid_bias}
 
-    @jwt_required
     def put(self):
         args = PARSER.parse_args()
         MC.pid_proportional = args['proportional']
@@ -141,7 +135,6 @@ class PID(Resource):
 class Commit(Resource):
     @jwt_required
     def get(self):
-        #TODO return MC.commit_frequency
         return {'frequency': MC.commit_frequency}
     @jwt_required
     def put(self):
@@ -180,7 +173,6 @@ class Config(Resource):
                 'restime': MC.op_asic_restime,
                 'miners': MC.miners.get_all()}
 
-    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.temp_target = args['target']
