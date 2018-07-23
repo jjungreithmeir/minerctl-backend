@@ -1,17 +1,25 @@
 import serial
 import time
+from src.config_reader import ConfigReader
 
+# mapping True = 1, False = 0, None = 255 for miner states
 SET_ACTIONS = {None: 255, False: 0, True: 1}
 GET_ACTIONS = {SET_ACTIONS[None]: None,
                SET_ACTIONS[False]: False,
                SET_ACTIONS[True]: True}
+"""
+This dict is used to translate variable names to their respective serial cmds.
+In an ideal world this would not be necessary but as this project/app grew over
+the course of two months some design flaws are to be expected (which does not
+mean that they can not be fixed).
+"""
 CMD_DICT = {
     'info_fw_version': 'fw',
     'temp_target': 'targettemp',
     'temp_sensor_id': 'sensor',
     'temp_external': 'external',
     'filter_pressure_diff': 'pressure',
-    'filter_status_ok': 'filter', # TODO this could be a potential error source as it was a bool once
+    'filter_status_ok': 'filter',
     'filter_threshold': 'threshold',
     'fans_min_rpm': 'minrpm',
     'fans_max_rpm': 'maxrpm',
@@ -52,17 +60,26 @@ class MinerIterator:
         return val
 
 class MinerList:
+    """
+    This container acts like a simple list, but instead of variable values it is
+    hooked into the serial interface to get up-to-date information and set
+    values blazingly fast. Wow! Such speed! (to be honest, it is quite slow...)
+    """
     def __init__(self, length):
         self._length = int(_read("?maxminers"))
     def __len__(self):
         return self._length
     def __getitem__(self, key):
+        """
+        Returns the current bool/None state of the miner.
+
+        :returns: bool or None
+        """
         state = int(_read("?miner {}".format(key)))
         return GET_ACTIONS[state]
     def __setitem__(self, key, value):
         _write("!miner {} {}".format(key, SET_ACTIONS[value]))
     def __iter__(self):
-        #TODO fix iterator
         return MinerIterator(self._miners).__iter__()
     def serialize(self):
         states = []
@@ -77,17 +94,29 @@ class MinerList:
             miner_list.append(GET_ACTIONS[int(miner)])
         return miner_list
 
-# TODO change parameters based on config file
-SERIAL = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+CFG_RDR = ConfigReader(path='config/config.ini')
+SERIAL = serial.Serial(CFG_RDR.get_attr('serial_port'),
+                       CFG_RDR.get_attr('baudrate'),
+                       timeout=1)
 
 def _read(cmd):
+    """
+    Read whole serial interface buffer.
+
+    :returns: stripped str
+    """
     _write(cmd)
     while not SERIAL.in_waiting:
         time.sleep(.1)
     return SERIAL.read(SERIAL.in_waiting).decode('utf-8').strip()
 
-def _write(cmd):
-    resp_len = SERIAL.write(bytes(cmd + '\n', encoding='utf-8'))
+def _write(cmd, line_ending='\n'):
+    """
+    Write message to the serial interface as byte stream.
+
+    :returns: number of bytes written
+    """
+    resp_len = SERIAL.write(bytes(cmd + line_ending, encoding='utf-8'))
     return resp_len
 
 class Microcontroller:
@@ -115,6 +144,8 @@ class Microcontroller:
         self.op_gpu_ontime = None
         self.op_gpu_offtime = None
         self.op_asic_restime = None
+        self.commit = None
+        self.commit_frequency = 12
 
     def __setattr__(self, name, value):
         if value is None or name.startswith("_"):
@@ -126,9 +157,10 @@ class Microcontroller:
             elif value == "asic":
                 mode_id = 1
             _write("!mode {}".format(mode_id))
-        elif name == "miners":
+        elif name == "miners" or name == "commit_frequency":
             object.__setattr__(self, name, value)
-            # TODO add direct access to miners
+        elif name == "commit":
+            _read("!commit")
         else:
             _write("!{} {}".format(CMD_DICT[name], value))
 
@@ -145,7 +177,7 @@ class Microcontroller:
             mode_id = int(_read("?mode"))
             modes = ["gpu", "asic"]
             return modes[mode_id]
-        elif name == "miners":
+        elif name == "miners" or name == "commit_frequency":
             return object.__getattribute__(self, name)
         elif name == "info_fw_version":
             return _read("?{}".format(CMD_DICT[name]))

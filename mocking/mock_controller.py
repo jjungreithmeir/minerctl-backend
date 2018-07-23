@@ -4,6 +4,8 @@ class Controller:
     """
     This class acts as a dumb wrapper for currently non-existing
     microcontroller.
+    TODO Currently this class is most likely broken and needs to be fixed to
+    act as a mock for mc_wrapper.
     """
 
     def __init__(self):

@@ -32,6 +32,8 @@ class Temperature(Resource):
                 'target': MC.temp_target,
                 'sensor_id': MC.temp_sensor_id,
                 'external': MC.temp_external}
+
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.temp_target = args['target']
@@ -46,6 +48,8 @@ class Filtration(Resource):
         return {'pressure_diff': MC.filter_pressure_diff,
                 'status_ok': MC.filter_status_ok,
                 'threshold': MC.filter_threshold}
+
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.filter_threshold = args['threshold']
@@ -59,6 +63,7 @@ class Ventilation(Resource):
                 'max_rpm': MC.fans_max_rpm,
                 'rpm': MC.fans_rpm}
 
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.fans_min_rpm = args['min_rpm']
@@ -76,6 +81,7 @@ class Operation(Resource):
             resp['restime'] = MC.op_asic_restime
         return resp
 
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.active_mode = args['active_mode']
@@ -93,6 +99,7 @@ class MinerController(Resource):
         miner_id = int(args['id'])
         return {'running': MC.miners[miner_id]}
 
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         action = args['action']
@@ -121,12 +128,26 @@ class PID(Resource):
                 'integral': MC.pid_integral,
                 'derivative': MC.pid_derivative,
                 'bias': MC.pid_bias}
+
+    @jwt_required
     def put(self):
         args = PARSER.parse_args()
         MC.pid_proportional = args['proportional']
         MC.pid_integral = args['integral']
         MC.pid_derivative = args['derivative']
         MC.pid_bias = args['bias']
+        return '', 200
+
+class Commit(Resource):
+    @jwt_required
+    def get(self):
+        #TODO return MC.commit_frequency
+        return {'frequency': MC.commit_frequency}
+    @jwt_required
+    def put(self):
+        args = PARSER.parse_args()
+        MC.commit = args['commit']
+        MC.commit_frequency = args['frequency']
         return '', 200
 
 class Config(Resource):
@@ -159,6 +180,7 @@ class Config(Resource):
                 'restime': MC.op_asic_restime,
                 'miners': MC.miners.get_all()}
 
+    @jwt_required
     def patch(self):
         args = PARSER.parse_args()
         MC.temp_target = args['target']
@@ -206,6 +228,9 @@ def prepare_app():
 
     PARSER.add_argument('action', help="miner action like 'toggle'")
     PARSER.add_argument('id', type=int, help='miner id')
+    PARSER.add_argument('commit', type=bool, help='commit current config')
+    PARSER.add_argument('frequency', type=int,
+                        help='hours between automated commits')
 
     API.add_resource(Info, '/info', methods=['GET'])
     API.add_resource(Temperature, '/temp', methods=['GET', 'PATCH'])
@@ -215,12 +240,17 @@ def prepare_app():
     API.add_resource(MinerController, '/miner', methods=['GET', 'PATCH'])
     API.add_resource(PID, '/pid', methods=['GET', 'PUT'])
     API.add_resource(Config, '/cfg', methods=['GET', 'PATCH'])
+    API.add_resource(Commit, '/commit', methods=['GET', 'PUT'])
 
     return APP
 
 def create_app(host='127.0.0.1', port='12345'):
     """
-    Currently this flask API is only running single threaded as parallel access to the Microcontroller class breaks the communication with the serial interface. In future version an additonal microservice, such as a RPC service which handles the requests to the serial interface would probably be ideal, as this workaround leads to severe performance decreases.
+    Currently this flask API is only running single threaded as parallel access
+    to the Microcontroller class breaks the communication with the serial
+    interface. In future version an additonal microservice, such as a RPC
+    service which handles the requests to the serial interface would probably be
+    ideal, as this workaround leads to severe performance decreases.
     """
     app = prepare_app()
     app.run(host=host, port=port, threaded=False)
