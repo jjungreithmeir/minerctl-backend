@@ -1,6 +1,6 @@
 # minerctl backend
 
-In order to run this app you need `sqlite` and `virtualenv`.
+In order to run this app you need `sqlite`, `virtualenv`, `make`, `python3-pip` and `python3` (this has been tested on 3.6.6). It is also recommended to run this application inside a virtual environment (with a virtualenv folder called `env`).
 
 For the initial setup execute `make install`.
 
