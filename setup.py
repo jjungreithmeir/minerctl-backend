@@ -16,7 +16,7 @@ setup(
         'cffi==1.11.5',
         'chardet==3.0.4',
         'click==6.7',
-        'cryptography==2.2.2',
+        'cryptography==3.2',
         'Flask==1.0.2',
         'Flask-JWT-Extended==3.10.0',
         'Flask-RESTful==0.3.6',
