@@ -42,7 +42,7 @@ setup(
         'requests==2.19.1',
         'six==1.11.0',
         'tzlocal==1.5.1',
-        'urllib3==1.23',
+        'urllib3==1.26.5',
         'uWSGI==2.0.17.1',
         'vine==1.1.4',
         'Werkzeug==0.14.1',
