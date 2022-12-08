@@ -12,7 +12,7 @@ setup(
         'atomicwrites==1.1.5',
         'attrs==18.1.0',
         'billiard==3.5.0.4',
-        'certifi==2018.4.16',
+        'certifi==2022.12.7',
         'cffi==1.11.5',
         'chardet==3.0.4',
         'click==6.7',
